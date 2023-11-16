@@ -1,0 +1,122 @@
+import pygame
+
+pygame.init()
+clock = pygame.time.Clock()
+
+
+screen = pygame.display.set_mode((750, 750))
+screenColor = (0, 0, 0)
+
+all_sprites_list = pygame.sprite.Group()
+all_walls_list = pygame.sprite.Group()
+
+
+class Player(pygame.sprite.Sprite):
+    def __init__(self, color, width, height, x, y, speed):
+        super().__init__()
+
+        self.image = pygame.Surface((width, height))
+            
+        pygame.draw.rect(self.image, color, pygame.Rect(0, 0, width, height))
+        self.rect = self.image.get_rect()
+
+        self.rect.x = x
+        self.rect.y = y
+
+        self.speed = 5
+
+    def update(self):
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_w]:
+            self.rect.y -= self.speed
+        if keys[pygame.K_s]:
+            self.rect.y += self.speed
+        if keys[pygame.K_a]:
+            self.rect.x -= self.speed
+        if keys[pygame.K_d]:
+            self.rect.x += self.speed
+
+        for wall in all_walls_list:
+            if self.rect.colliderect(wall.rect):
+                self.rect.right = wall.rect.left
+                self.rect.left = wall.rect.right
+                self.rect.bottom = wall.rect.top
+                self.rect.top = wall.rect.bottom
+
+
+
+class Wall(pygame.sprite.Sprite):
+    def __init__(self, color, width, height, x, y):
+        super().__init__()
+
+        self.image = pygame.Surface((width, height))
+            
+        pygame.draw.rect(self.image, color, pygame.Rect(0, 0, width, height))
+        self.rect = self.image.get_rect()
+
+        self.rect.x = x
+        self.rect.y = y
+
+
+
+
+
+
+# Holds the level layout in a list of strings.
+level = [
+"WWWWWWWWWWWWWWWWWWWWWWWWW",
+"W                       W",
+"W                       W",
+"W                       W",
+"W                       W",
+"W                       W",
+"W                       W",
+"W                       W",
+"W                       W",
+"W                       W",
+"W                       W",
+"W                       W",
+"W                       W",
+"W                       W",
+"WWWWWWWWWWWWWWWWWWWWWWWWW",
+]
+
+wallBuildX = 0
+wallBuildY = 0
+for row in level:
+    for col in row:
+        if col == "W":
+            all_walls_list.add(Wall((255, 255, 255), 30, 30, wallBuildX, wallBuildY))
+        wallBuildX += 30
+    wallBuildY += 30
+    wallBuildX = 0
+
+
+
+
+player = Player((255, 255, 255), 35, 35, 250, 250, 5)
+all_sprites_list.add(player)
+
+
+
+
+
+
+running = True
+while running:
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    
+    all_sprites_list.update()
+    all_walls_list.update()
+
+    screen.fill(screenColor)
+    all_sprites_list.draw(screen)
+    all_walls_list.draw(screen)
+
+    pygame.display.flip()
+    clock.tick(60)
