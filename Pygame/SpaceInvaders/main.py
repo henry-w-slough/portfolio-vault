@@ -16,6 +16,7 @@ pygame.display.set_icon(pygame.image.load("img/logo.png"))
 
 #text font for text on screen
 textFont = pygame.font.Font("joystix monospace.otf", 50)
+deathFont = pygame.font.Font("joystix monospace.otf", 50)
 
 #defining all images used in game
 alienTexture = pygame.transform.scale(pygame.image.load("img/alien.png"), (55, 55))
@@ -178,7 +179,7 @@ class Player(pygame.sprite.Sprite):
                     bullets.add(Bullet(self.rect.x, self.rect.y))
                     self.bulletTicks = 0
 
-            if self.health == 0:
+            if self.health <= 0:
                 self.hit = True
             
         #if the player has been hit, changes the image to an explosion texture and waits a time till death and game ending
@@ -192,7 +193,7 @@ class Player(pygame.sprite.Sprite):
             
 #function for every new wave
 def newWave():
-    randomAlienSpeed = random.randrange(1, 3)
+    randomAlienSpeed = random.randrange(2, 4)
 
     for row in range(6): 
         for column in range(4):
@@ -202,12 +203,14 @@ def newWave():
 #defining player
 score = 0
 player = Player(0, 600, 15, 3)
+player.hit = False
 sprites.add(player)
 
 
 #texts
 scoreText = textFont.render("Score "+str(score), False, (255, 255, 255))
 healthText = textFont.render("Health "+str(player.health), False, (255, 255, 255))
+deathText = textFont.render("You Died!", False, (255, 255, 255))
 
 #setting the first wave
 newWave()
@@ -230,7 +233,7 @@ while running:
                 for alien in aliens:
                     alien.rect.y += 30
                     alien.movement = -alien.speed
-            if alien.rect.x <= 0:
+            if alien.rect.x <= 1:
                 for alien in aliens:
                     alien.movement = alien.speed
 
@@ -247,8 +250,15 @@ while running:
             player.health -= 1
             healthText = textFont.render("Health "+str(player.health), False, (255, 255, 255)) 
 
+        #collision between player and aliens
+        if pygame.sprite.groupcollide(sprites, aliens, False, False, pygame.sprite.collide_mask):
+            cannonHurtSound.play()
+            player.health -= 100
+            healthText = textFont.render("Health "+str(player.health), False, (255, 255, 255)) 
+
+
     #if the player is dead, kill all aliens and alien bullets too
-    if player.health == 0:
+    if player.hit == True:
         for alien in aliens:
             alien.kill()
         for bullet in alienBullets:
@@ -270,8 +280,14 @@ while running:
     alienBullets.draw(screen)
 
     #blitting score and health texts
-    screen.blit(scoreText, (10, 0))
-    screen.blit(healthText, (560, 0))
+    if player.hit == False:
+        screen.blit(scoreText, (10, 0))
+        screen.blit(healthText, (560, 0))
+    if player.hit == True:
+        scoreText = deathFont.render("Score "+str(score), False, (255, 255, 255))
+        screen.blit(scoreText, (deathText.get_rect(center=(450, 350))))
+        screen.blit(deathText, (250, 200))
+    
 
     #updating screen and FPS
     pygame.display.flip()
