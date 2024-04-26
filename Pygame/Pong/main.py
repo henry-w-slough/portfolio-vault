@@ -100,7 +100,7 @@ class Enemy(pygame.sprite.Sprite):
 
 #ball class
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, color, x, y, speed, resetTicks):
+    def __init__(self, color, x, y, x_speed, y_speed, resetTicks):
         super().__init__()
 
         self.image = pygame.Surface((30, 30))
@@ -110,7 +110,8 @@ class Ball(pygame.sprite.Sprite):
 
         self.rect.x, self.rect.y = x, y
 
-        self.speed = speed
+        self.x_speed = x_speed
+        self.y_speed = y_speed
 
         self.originalResetTicks = resetTicks
         self.resetTicks = resetTicks
@@ -157,13 +158,13 @@ class Ball(pygame.sprite.Sprite):
 
             #moving based on momentum
             if self.x_momentum == "left":
-                self.rect.x -= self.speed
+                self.rect.x -= self.x_speed
             if self.x_momentum == "right":
-                self.rect.x += self.speed
+                self.rect.x += self.x_speed
             if self.y_momentum == "up":
-                self.rect.y -= self.speed
+                self.rect.y -= self.y_speed
             if self.y_momentum == "down":
-                self.rect.y += self.speed
+                self.rect.y += self.y_speed
 
 #button class
 class Button(pygame.sprite.Sprite):
@@ -192,7 +193,7 @@ sprites.add(player)
 enemyPaddle = Enemy((255, 255, 255), 840, 100, 20)
 enemy.add(enemyPaddle)
 
-pongBall = Ball((255, 255, 255), 435, 350, 5, 120)
+pongBall = Ball((255, 255, 255), 435, 350, 5, 5, 120)
 ball.add(pongBall) 
 pongBall.randomMomentum()
 
@@ -228,33 +229,55 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    
-    #moving the AI paddle based on the pong balls position. Also stops AI paddle from passing the screen borders
-    if pongBall.rect.y <= 75:
-        enemyPaddle.rect.y = 0
-    if pongBall.rect.y >= 625:
-        enemyPaddle.rect.y = 560
-    if pongBall.rect.y <= 625 and pongBall.rect.y >= 75:
-        enemyPaddle.rect.y = pongBall.rect.y-75
 
 
     #all functions for if the player chooses AI option
     if AIGameStarted == True:
+
+	#moving the AI paddle based on the pong balls position. Also stops AI paddle from passing the screen borders
+        if pongBall.rect.y <= 75:
+            enemyPaddle.rect.y = 0
+        if pongBall.rect.y >= 625:
+            enemyPaddle.rect.y = 560
+        if pongBall.rect.y <= 625 and pongBall.rect.y >= 75:
+            enemyPaddle.rect.y = pongBall.rect.y-75
         
         #collision between player paddle and pong ball and specifics
         if pygame.sprite.spritecollide(pongBall, sprites, False):
-            pongBall.speed += 0.2
+            randomBallSpeedX = random.uniform(0.5, 2)
+            randomBallSpeedY = random.uniform(0.5, 2)
+            
+            pongBall.x_speed += randomBallSpeedX
+            pongBall.y_speed += randomBallSpeedY
+
+            pongBall.x_speed += 0.5
+            pongBall.y_speed += 0.5
+
             pongBall.x_momentum = "right"
+
+
         #colliision between enemy paddle and pong ball and specifics
         if pygame.sprite.spritecollide(pongBall, enemy, False):
-            pongBall.speed += 0.2
+            randomBallSpeedX = random.uniform(0.5, 2)
+            randomBallSpeedY = random.uniform(0.5, 2)
+            
+            pongBall.x_speed += randomBallSpeedX
+            pongBall.y_speed += randomBallSpeedY
+
+            pongBall.x_speed += 0.5
+            pongBall.y_speed += 0.5
+
             pongBall.x_momentum = "left"
 
-        #resetting the pong ball and pong ball speed when it touches the outer walls
+        #resetting pong ball and speed and increasing scores when the pong ball touches outer walls
         if pongBall.rect.x <= 0:
-            pongBall.speed = 5
+            pongBall.x_speed = 5
+            pongBall.y_speed = 5
             pongBall.reset = True
+
         if pongBall.rect.x >= 900:
+            pongBall.x_speed = 5
+            pongBall.y_speed = 5
             pongBall.reset = True
 
         #updating enemy, player, and ball
@@ -275,21 +298,37 @@ while running:
 
         #collision between pong ball and player with specifics
         if pygame.sprite.spritecollide(pongBall, sprites, False):
-            pongBall.speed += 0.2
+            randomBallSpeedX = random.uniform(0.5, 2)
+            randomBallSpeedY = random.uniform(0.5, 2)
+            
+            pongBall.x_speed += randomBallSpeedX
+            pongBall.y_speed += randomBallSpeedY
+
             pongBall.x_momentum = "right"
+
+
         #collision between player 2 and pong ball with specifics
         if pygame.sprite.spritecollide(pongBall, playertwo_group, False):
-            pongBall.speed += 0.2
+            randomBallSpeedX = random.uniform(0.5, 2)
+            randomBallSpeedY = random.uniform(0.5, 2)
+            
+            pongBall.x_speed += randomBallSpeedX
+            pongBall.y_speed += randomBallSpeedY
+
             pongBall.x_momentum = "left"
+
 
         #resetting pong ball and speed and increasing scores when the pong ball touches outer walls
         if pongBall.rect.x <= 0:
             enemyScore += 1
             enemyScoreText = textFont.render(str(enemyScore), False, (255, 255, 255))
-            pongBall.speed = 5
+            pongBall.x_speed = 5
+            pongBall.y_speed = 5
             pongBall.reset = True
         if pongBall.rect.x >= 900:
             playerScore += 1
+            pongBall.x_speed = 5
+            pongBall.y_speed = 5
             playerScoreText = textFont.render(str(playerScore), False, (255, 255, 255))
             pongBall.reset = True
 
