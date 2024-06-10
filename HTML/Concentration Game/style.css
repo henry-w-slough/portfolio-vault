@@ -1,1 +1,99 @@
+@font-face {
+    font-family: 'Notable';
+    font-style: normal;
+    font-weight: 400;
+    src: url(https://fonts.gstatic.com/s/notable/v18/gNMEW3N_SIqx-WX9yHQiFaWw9MM.woff2) format('woff2');
+  }
 
+  
+#redButton {
+    width:200px;
+    height:200px;
+    padding: 15px 25px;
+    font-size: 24px;
+    cursor: pointer;
+    outline: none;
+    color: #fff;
+    background-color: rgb(199, 30, 30);
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+    margin-inline:auto;
+    display:flex;
+    justify-content:center;
+  }
+  
+  #redButton:active {
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+
+#blueButton {
+    width:200px;
+    height:200px;
+    padding: 15px 25px;
+    font-size: 24px;
+    cursor: pointer;
+    outline: none;
+    color: #fff;
+    background-color: rgb(30, 30, 199);
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+    margin-inline:auto;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  #blueButton:active {
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+
+#greenButton {
+    width:200px;
+    height:200px;
+    padding: 15px 25px;
+    font-size: 24px;
+    cursor: pointer;
+    outline: none;
+    color: #fff;
+    background-color: rgb(30, 199, 30);
+    
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+    margin-inline:auto;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+  #greenButton:active {
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+
+  #startButton {
+    width:200px;
+    height:50;
+    padding: 15px 25px;
+    font-size: 24px;
+    cursor: pointer;
+    outline: none;
+    color: #fff;
+    background-color: rgb(173, 216, 230);
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+    margin-inline:auto;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+  #startButton:active {
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
